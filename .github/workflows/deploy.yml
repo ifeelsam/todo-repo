@@ -21,6 +21,7 @@ jobs:
         run: bun install
 
       - name: Build project
+        working-directory: ./frontend
         run: bun run build
 
       - name: Deploy to GitHub Pages

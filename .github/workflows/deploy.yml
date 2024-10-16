@@ -5,6 +5,10 @@ on:
     branches:
       - main  # Change this to your default branch if it's not 'main'
 
+# Add permissions here
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -28,9 +32,21 @@ jobs:
           cd frontend
           bun run build
 
+      - name: List build output
+        run: |
+          echo "Build output:"
+          ls -la frontend/dist
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./frontend/dist
-          publish_branch: gh-pages  # Explicitly set the branch to deploy to
+          publish_branch: gh-pages
+        env:
+          DEBUG: true
+
+      - name: Deployment status
+        run: |
+          echo "Deployment step completed"
+          git branch -a

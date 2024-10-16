@@ -5,7 +5,6 @@ on:
     branches:
       - main  # Change this to your default branch if it's not 'main'
 
-# Add permissions here
 permissions:
   contents: write
 
@@ -32,19 +31,21 @@ jobs:
           cd frontend
           bun run build
 
-      - name: List build output
+      - name: Debug - List directories
         run: |
-          echo "Build output:"
-          ls -la frontend/dist
+          echo "Current directory:"
+          pwd
+          echo "Contents of current directory:"
+          ls -R
+          echo "Contents of frontend directory:"
+          ls -R frontend
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./frontend/dist
+          publish_dir: frontend/dist
           publish_branch: gh-pages
-        env:
-          DEBUG: true
 
       - name: Deployment status
         run: |

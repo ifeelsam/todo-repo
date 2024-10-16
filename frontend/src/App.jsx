@@ -1,19 +1,72 @@
 import { HoverEffect } from "./components/ui/hover-card";
-import {Input} from "./components/ui/input"
-import {Button } from "./components/ui/button"
+import { Input } from "./components/ui/input"
+import { Button } from "./components/ui/button"
 import { Plus, Trash2 } from 'lucide-react'
-import {SparklesText} from "./components/ui/sparkle-text"
+import { SparklesText } from "./components/ui/sparkle-text"
+import { useEffect, useState } from "react";
+const backendURI = "http://localhost:3000"
 
 export default function App() {
-  const addTodo = () => {}
+  const [NewTodoTitle, setNewTodoTitle] = useState("")
+  const [NewTodoDesc, setNewTodoDesc] = useState("")
+  const [todos, setTodos] = useState([])
+  const getTodos = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/tasks", {
+        method: "GET",
+        mode: "cors",
+      })
+      const data = await response.json()
+      setTodos(data)
+      console.log(response)
+    } catch (error) {
+      console.log(error, "error geting the todos")
+    }
+  }
+  useEffect(() => {
+    getTodos()
+  }, [])
+  const addTodo = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/tasks`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: NewTodoTitle,
+          description: NewTodoDesc
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log("Todo added:", result);
+      getTodos()
+    }
+    catch (error) {
+      console.log("error adding todos", error)
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-8">
       <SparklesText className="flex justify-center mt-14" text="Santhoshini Todo-App" />
       <div className="flex mx-10 max-w-4xl mt-32">
         <Input
-          type="text"
-          onChange={(e) => setNewTodo(e.target.value)}
+          type="title"
+          onChange={(e) => setNewTodoTitle(e.target.value)}
           placeholder="Add a new todo"
+          className="flex-grow mr-2 py-6"
+        />
+        <Input
+          type="description"
+          onChange={(e) => setNewTodoDesc(e.target.value)}
+          placeholder="description"
           className="flex-grow mr-2 py-6"
         />
         <Button onClick={addTodo} className="py-6">
@@ -22,22 +75,7 @@ export default function App() {
         </Button>
       </div>
 
-      <HoverEffect items={projects} />
+      <HoverEffect items={todos} />
     </div>
   );
 }
-export const projects = [
-  {
-    title: "go to gym",
-    description:
-      "40 reps chest || 50 reps pull"
-  },
-  {
-    title: "laudary",
-    description: "kapde dhone hai "
-  },
-  {
-    title: "study mathematics",
-    description: "exams are coming up study hard"
-  }
-];

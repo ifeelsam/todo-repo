@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Trash2, Pen} from "lucide-react";
 
 export const HoverEffect = ({
   items,
@@ -53,10 +54,11 @@ export const Card = ({
   return (
     (<div
       className={cn(
-        "rounded-2xl h-32 w-full p-1 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
+        "rounded-xl h-32 w-full p-1 overflow-hidden bg-black border border-transparent dark:border-white/[0.2] group-hover:border-slate-700 relative z-20",
         className
       )}>
       <div className="relative z-50">
+        {/* <div className="flex justify-end"><CardDelete/></div> */}
         <div className="p-4">{children}</div>
       </div>
     </div>)
@@ -66,10 +68,16 @@ export const CardTitle = ({
   className,
   children
 }) => {
-  return (
-    (<h4 className={cn("text-zinc-100 font-bold tracking-wide mt-2 text-lg", className)}>
+  return ( <div>
+    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-2 text-lg", className)}>
       {children}
-    </h4>)
+    </h4>
+    <span className="flex justify-end pr-2">
+        <CardAdd/>
+        <span className="px-2"></span>
+        <CardDelete/>
+    </span>
+    </div>
   );
 };
 export const CardDescription = ({
@@ -77,16 +85,28 @@ export const CardDescription = ({
   children
 }) => {
   return (
-    (<p
-      className={cn("mt-6 text-zinc-400 tracking-wide leading-relaxed text-md", className)}>
+    <p
+      className={cn("mt-1 text-zinc-400 tracking-wide leading-relaxed text-md", className)}>
       {children}
-    </p>)
+    </p>
   );
 };
 export const CardAdd = ({
     className, 
     children
 }) => {
-    return 
-    <Button></Button>
+    return <Link>
+        <Pen/>
+    </Link>
+}
+
+export const CardDelete= ({
+    className, 
+    children
+}) => {
+    return (
+        <Link>
+            <Trash2/>
+        </Link>
+    )
 }

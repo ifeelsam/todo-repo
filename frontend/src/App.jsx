@@ -2,20 +2,22 @@ import { HoverEffect } from "./components/ui/hover-card";
 import {Input} from "./components/ui/input"
 import {Button } from "./components/ui/button"
 import { Plus, Trash2 } from 'lucide-react'
+import {SparklesText} from "./components/ui/sparkle-text"
 
 export default function App() {
   const addTodo = () => {}
   return (
     <div className="max-w-5xl mx-auto px-8">
-      <div className="flex m-11">
+      <SparklesText className="flex justify-center mt-14" text="Santhoshini Todo-App" />
+      <div className="flex mx-10 max-w-4xl mt-32">
         <Input
           type="text"
           onChange={(e) => setNewTodo(e.target.value)}
           placeholder="Add a new todo"
-          className="flex-grow mr-2"
+          className="flex-grow mr-2 py-6"
         />
-        <Button onClick={addTodo}>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={addTodo} className="py-6">
+          <Plus className="h-6 w-6 mr-2" />
           Add
         </Button>
       </div>

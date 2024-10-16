@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { Task } from "../tasks.model.js"
 import mongoose from "mongoose"
+import cors from "cors"
 const app = express();
 const PORT = 3000;
 
@@ -16,7 +17,7 @@ const PORT = 3000;
 })()
 
 let tasks = [];
-
+app.use(cors())
 
 app.use(bodyParser.json());
 

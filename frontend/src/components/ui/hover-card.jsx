@@ -1,13 +1,15 @@
-import {Button} from "./button"
+import {Input } from "./input"
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Trash2, Pen} from "lucide-react";
+import { Trash2, Pen, Check} from "lucide-react";
 
 export const HoverEffect = ({
   items,
-  className
+  className,
+  onDelete,
+  onEdit
 }) => {
   let [hoveredIndex, setHoveredIndex] = useState(null);
 
@@ -38,7 +40,7 @@ export const HoverEffect = ({
             )}
           </AnimatePresence>
           <Card>
-            <CardTitle>{item.title}</CardTitle>
+            <CardTitle onDelete={onDelete} onEdit={onEdit} title={item.title} description={item.description} id={item._id}>{item.title}</CardTitle>
             <CardDescription>{item.description}</CardDescription>
           </Card>
         </Link>
@@ -66,19 +68,66 @@ export const Card = ({
 };
 export const CardTitle = ({
   className,
-  children
+  children, 
+  onDelete, 
+  onEdit,
+  id, 
+  title,
+  description
 }) => {
-  return ( <div>
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [updatedTitle, setUpdatedTitle] = useState(title);
+  const [updatedDesc, setUpdatedDesc] = useState(description);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    onEdit(id, updatedTitle, updatedDesc);
+    setIsEditing(false);
+  };
+  return ( 
+  <div>
+  {isEditing ? (
+    <div>
+      <Input
+      type="text"
+      value={updatedTitle}
+      onChange={(e) => setUpdatedTitle(e.target.value)}
+      className="text-zinc-100 max-w-2xl font-bold tracking-wide text-lg"
+      
+      />
+
+      <span className="flex justify-end px-8">
+      <Link onClick={handleSave}><Check/></Link>
+      </span>
+      <Input
+      type="text"
+      value={updatedDesc}
+      onChange={(e) => setUpdatedDesc(e.target.value)}
+      className="text-zinc-100 max-w-2xl pb-2 font-bold tracking-wide text-lg" 
+      />
+
+    </div>
+  ) : (
+  <div>
     <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-2 text-lg", className)}>
       {children}
     </h4>
     <span className="flex justify-end pr-2">
-        <CardAdd/>
+        <Link onClick={handleEdit}>
+           <Pen/>
+        </Link>
         <span className="px-2"></span>
-        <CardDelete/>
+        <Link onClick={() => onDelete(id)}>
+            <Trash2/>
+        </Link>
     </span>
+    </div>)}
     </div>
-  );
+  )
 };
 export const CardDescription = ({
   className,
@@ -91,22 +140,3 @@ export const CardDescription = ({
     </p>
   );
 };
-export const CardAdd = ({
-    className, 
-    children
-}) => {
-    return <Link>
-        <Pen/>
-    </Link>
-}
-
-export const CardDelete= ({
-    className, 
-    children
-}) => {
-    return (
-        <Link>
-            <Trash2/>
-        </Link>
-    )
-}

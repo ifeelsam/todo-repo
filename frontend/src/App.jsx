@@ -1,7 +1,7 @@
 import { HoverEffect } from "./components/ui/hover-card";
 import { Input } from "./components/ui/input"
 import { Button } from "./components/ui/button"
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus} from 'lucide-react'
 import { SparklesText } from "./components/ui/sparkle-text"
 import { useEffect, useState } from "react";
 const backendURI = "http://localhost:3000"
@@ -26,6 +26,52 @@ export default function App() {
   useEffect(() => {
     getTodos()
   }, [])
+
+
+  const deleteTodo = async(id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: "DELETE", 
+        mode: "cors"
+      })
+      if(!response.ok) {
+        console.log(response.status)
+      }
+      getTodos()
+    } catch (error) {
+      console.log("log",error)
+      
+    }
+
+  }
+
+
+  const editTodo = async (id, updatedTitle, updatedDesc) => {
+    try {
+      const response = await fetch(`${backendURI}/tasks/${id}`, {
+        method: "PUT",
+        mode: "cors",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: updatedTitle,
+          description: updatedDesc,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Todo updated:", result);
+      getTodos();
+    } catch (error) {
+      console.log("error updating todo", error);
+    }
+  };
+
   const addTodo = async () => {
     try {
       const response = await fetch(`http://localhost:3000/tasks`, {
@@ -75,7 +121,7 @@ export default function App() {
         </Button>
       </div>
 
-      <HoverEffect items={todos} />
+      <HoverEffect items={todos} onDelete={deleteTodo} onEdit={editTodo}/>
     </div>
   );
 }

@@ -1,62 +1,35 @@
-name: Deploy Frontend to GitHub Pages
+
+name: Deploy to GitHub Pages
+
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    branches:
+      - main  # Change this to your default branch if it's not 'main'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-      - name: Debug - List directory contents
-        run: |
-          echo "Root directory:"
-          ls -la
-          echo "Frontend directory:"
-          ls -la frontend
+
+      - name: Set up bun
+        uses: oven-sh/setup-bun@v2
+        
       - name: Install dependencies
         run: |
           cd frontend
           bun install
-      - name: Build
+
+      - name: Build project
         run: |
           cd frontend
           bun run build
-      - name: Debug - List build output
-        run: |
-          echo "Build output:"
-          ls -la frontend/dist
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: './frontend/dist'
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
-    name: Deploy
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/dist

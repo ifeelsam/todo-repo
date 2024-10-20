@@ -1,18 +1,17 @@
 import { HoverEffect } from "./components/ui/hover-card";
 import { Input } from "./components/ui/input"
 import { Button } from "./components/ui/button"
-import { Plus} from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { SparklesText } from "./components/ui/sparkle-text"
 import { useEffect, useState } from "react";
-const backendURI = "http://localhost:3000"
-
+const backendURI = "https://todo-backend.ifeelsam.workers.dev"
 export default function App() {
   const [NewTodoTitle, setNewTodoTitle] = useState("")
   const [NewTodoDesc, setNewTodoDesc] = useState("")
   const [todos, setTodos] = useState([])
   const getTodos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${backendURI}/tasks`, {
         method: "GET",
         mode: "cors",
       })
@@ -28,19 +27,19 @@ export default function App() {
   }, [])
 
 
-  const deleteTodo = async(id) => {
+  const deleteTodo = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
-        method: "DELETE", 
+      const response = await fetch(`${backendURI}/tasks/${id}`, {
+        method: "DELETE",
         mode: "cors"
       })
-      if(!response.ok) {
+      if (!response.ok) {
         console.log(response.status)
       }
       getTodos()
     } catch (error) {
-      console.log("log",error)
-      
+      console.log("log", error)
+
     }
 
   }
@@ -74,7 +73,7 @@ export default function App() {
 
   const addTodo = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/tasks`, {
+      const response = await fetch(`${backendURI}/tasks`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -85,11 +84,11 @@ export default function App() {
           description: NewTodoDesc
         })
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const result = await response.json();
       console.log("Todo added:", result);
       getTodos()
@@ -121,7 +120,7 @@ export default function App() {
         </Button>
       </div>
 
-      <HoverEffect items={todos} onDelete={deleteTodo} onEdit={editTodo}/>
+      <HoverEffect items={todos} onDelete={deleteTodo} onEdit={editTodo} />
     </div>
   );
 }

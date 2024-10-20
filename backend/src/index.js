@@ -6,10 +6,11 @@ import cors from "cors"
 const app = express();
 const PORT = 3000;
 
+
 // IIFE for connecting DB
 (async function () {
   try {
-    const connectionInstance = await mongoose.connect(process.env.DB);
+    const connectionInstance = await mongoose.connect("mongodb://localhost:27017/tasks");
     console.log(`\n MongoDB connected !! DB HOST: ${connectionInstance.connection.host}`)
   } catch (error) {
     console.log("error connecting db", error)
@@ -45,9 +46,55 @@ app.post('/tasks', async (req, res) => {
   res.status(201).json(newTask);
 });
 
+const a =
+    {
+      b: {
+        c: {
+          data: "santhoshini"
+        }
+      }
+    }
+
+const data = a.b.c.data
+
+
+const { data } = a.b.c
+
+// req: {
+//    body: {
+//         "id": 1,
+//         "title": "hellow",
+//         "description": "world"
+//    }
+// }
+
+const title = req.body
+const { id, title, description } = req.body
+
+
+app.post("/tasks2", (req, res)=> {
+  const title = req.body.title
+
+
+})
+
 app.put('/tasks/:id', async (req, res) => {
   const { id } = req.params;
-  const { title, description, complete } = req.body;
+
+  const id = req.body.id
+  const title = req.body.title
+  const description = req.body.description
+
+
+  const {
+     title,
+     description, 
+     complete 
+    } = req.body;
+
+
+  const req = req.complete == "True" ? "task completed": "not completed";
+  
   const task = await Task.findByIdAndUpdate(
     id,
     {
